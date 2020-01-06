@@ -1,8 +1,10 @@
-const mongodb = require('mongodb');
-const MongoClient = mongodb.MongoClient;
+const { MongoClient, ObjectID } = require('mongodb');
 
 const connectionURL = 'mongodb://127.0.0.1:27017';
 const databaseName = 'todo-manager';
+
+const id = new ObjectID();
+console.log(id);
 
 MongoClient.connect(connectionURL, { useNewUrlParser: true, useUnifiedTopology: true }, (error, client) => {
     if (error) {
@@ -37,23 +39,31 @@ MongoClient.connect(connectionURL, { useNewUrlParser: true, useUnifiedTopology: 
     //     console.log(result.ops);
     // });
 
-    db.collection('task').insertMany([
-        {
-            description: 'walk dog',
-            completed: false
-        },
-        {
-            description: 'get boba',
-            completed: true
-        },
-        {
-            description: 'do math',
-            completed: true
-        }
-    ], (error, result) => {
-        if (error) {
-            return console.log('Unable to insert documents');
-        }
-        console.log(result.ops);
+    // db.collection('task').insertMany([
+    //     {
+    //         description: 'walk dog',
+    //         completed: false
+    //     },
+    //     {
+    //         description: 'get boba',
+    //         completed: true
+    //     },
+    //     {
+    //         description: 'do math',
+    //         completed: true
+    //     }
+    // ], (error, result) => {
+    //     if (error) {
+    //         return console.log('Unable to insert documents');
+    //     }
+    //     console.log(result.ops);
+    // });
+
+    db.collection('task').findOne({ _id: new ObjectID("5e127fb47b97f106e2e24b32") }, (error, task) => {
+        console.log(task);
     });
+
+    db.collection('task').find({ completed: true }).toArray((error, task) => {
+        console.log(task);
+    })
 })
