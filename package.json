@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Umpoy/mongo_todo#readme",
   "dependencies": {
-    "mongodb": "^3.4.1"
+    "mongodb": "^3.4.1",
+    "mongoose": "^5.8.5"
   }
 }
