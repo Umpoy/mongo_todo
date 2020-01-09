@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const validator = require('validator');
 
 mongoose.connect('mongodb://127.0.0.1:27017/todo-manager-api', {
     useNewUrlParser: true,
@@ -7,12 +8,54 @@ mongoose.connect('mongodb://127.0.0.1:27017/todo-manager-api', {
 
 const User = mongoose.model('User', {
     name: {
-        type: String
+        type: String,
+        required: true,
+        trim: true
+    },
+    email: {
+        type: String,
+        required: true,
+        trim: true,
+        lowercase: true,
+        valdate(vale) {
+            if (!validator.isEmail(value)) {
+                throw new Error('Email is invalid/taken')
+            }
+        }
+    },
+    password: {
+        type: String,
+        required: true,
+        trim: true,
+        validate(value) {
+            if (value.length < 7 || value.includes('password')) {
+                throw new Error('Password not acceptable')
+            }
+        }
     },
     age: {
-        type: Number
+        type: Number,
+        validate(value) {
+            if (value < 0) {
+                throw new Error('Please Enter a positive number');
+            }
+        }
     }
 });
+
+
+const me = new User({
+    name: 'Clark',
+    email: 'superman@gmail.com',
+    password: 'mytestpassw0rd',
+    age: 35
+});
+
+me.save().then(() => {
+    console.log(me)
+}).catch((error) => {
+    console.log('Error: ', error)
+})
 
 const Todo = mongoose.model('Todo', {
     description: {
@@ -23,25 +66,13 @@ const Todo = mongoose.model('Todo', {
     }
 })
 
-const task = new Todo({
-    description: 'code out schema',
-    completed: true
-})
-
-task.save().then(() => {
-    console.log(task);
-}).catch(error => {
-    console.log(error);
-})
-
-// const me = new User({
-//     name: 'Ian',
-//     age: 27
-// });
-
-// me.save().then(() => {
-//     console.log(me)
-// }).catch((error) => {
-//     console.log('Error: ', error)
+// const task = new Todo({
+//     description: 'code out schema',
+//     completed: true
 // })
 
+// task.save().then(() => {
+//     console.log(task);
+// }).catch(error => {
+//     console.log(error);
+// })
